@@ -52,18 +52,7 @@ int main() {
   form_iterator nv = cgi.getElement("num_verse");
 
   // Convert and check input data
-  bool validInput = false;
-  if (chapter != cgi.getElements().end()) {
-	 int chapterNum = chapter->getIntegerValue();
-	 if (chapterNum > 150) {
-		 cout << "<p>The chapter number (" << chapterNum << ") is too high.</p>" << endl;
-	 }
-	 else if (chapterNum <= 0) {
-		 cout << "<p>The chapter must be a positive number.</p>" << endl;
-	 }
-	 else
-		 validInput = true;
-  }
+  bool validInput = true;
   
   /* TO DO: OTHER INPUT VALUE CHECKS ARE NEEDED ... but that's up to you! */
 
@@ -81,8 +70,39 @@ int main() {
   Bible webBible("/home/camcole/project2/web-complete");
   LookupResult result;
   Ref ref(bookNum, chapterNum, verseNum);
-  Verse verseObject = webBible.lookup(ref, result);
-  string s = verseObject.getVerse();
+  Verse verseObject;
+  verseObject = webBible.lookup(ref, result);
+  cout << "Search Type: <b>" << **st << "</b>";
+
+  int lastChap = 0;
+
+  for (int x = 0; x < nv->getIntegerValue(); x++) {
+	  validInput = true;
+	  
+	  if (result != SUCCESS)
+		  validInput = false;
+
+	  if (validInput) {
+		  string verseText = verseObject.getVerse();
+		  int currentChap = verseObject.getRef().getChap();
+
+		  if (lastChap != currentChap) {
+			  cout << "<p>" << verseObject.getRef().getBookName() << " " << currentChap << "</p>";
+		  }
+		  lastChap = currentChap;
+		  
+		  cout << "<p>" << verseObject.getRef().getVerse()
+			  << " " << verseText<< "</p>" << endl;
+	  }
+	  else {
+		  string errorMessage = webBible.error(result, ref);
+		  cout << "<p><em>" << errorMessage << "</em></p>" << endl;
+		  return 0;
+	  }
+	  verseObject = webBible.nextVerse(result);
+	  
+  }
+  
 
 
   /* SEND BACK THE RESULTS
@@ -92,14 +112,6 @@ int main() {
    * so we must include HTML formatting commands to make things look presentable!
    */
  
-  if (validInput) {
-	cout << "Search Type: <b>" << **st << "</b>" << endl;
-	cout << "<p>Your result: "
-		 << **book << " " << **chapter << ":" << **verse 
-		 << " " << s << "</p>" << endl;
-  }
-  else {
-	  cout << "<p>Invalid Input: <em>report the more specific problem.</em></p>" << endl;
-  }
+  
   return 0;
 }

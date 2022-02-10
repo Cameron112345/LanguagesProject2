@@ -124,6 +124,7 @@ Ref::Ref(const int b, const int c, const int v) { 	// Construct Ref from three i
 int Ref::getBook() {return book;}	 // Access book number
 int Ref::getChap() {return chap;}	 // Access chapter number
 int Ref::getVerse() {return verse;}; // Access verse number
+string Ref::getBookName() { return books[getBook()-1]; }
 
 // TO DO: implement comparison functions
 // REQUIRED: == comparison

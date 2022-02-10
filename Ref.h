@@ -30,6 +30,7 @@ public:
    int getBook();	// Access book number
    int getChap();	// Access chapter number
    int getVerse();	// Access verse number
+   string getBookName();
    // REQUIRED Comparison: determine if two references are equal
    bool operator==(const Ref);
    // OPTIONAL: < and > comparisons for Ref objects might also be useful
